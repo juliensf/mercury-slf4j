@@ -1,0 +1,3 @@
+MCFLAGS = --grade java --java-classpath ./slf4j-api-1.7.25.jar
+
+MCFLAGS-mercury_slf4j = --no-warn-nothing-exported --no-warn-interface-imports

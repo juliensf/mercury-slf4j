@@ -27,31 +27,60 @@
 
 %-----------------------------------------------------------------------------%
 
+:- type marker.
+
+%-----------------------------------------------------------------------------%
+
 :- pred debug(logger::in, string::in, io::di, io::uo) is det.
+
+:- pred debug(logger::in, marker::in, string::in, io::di, io::uo) is det.
 
 :- pred error(logger::in, string::in, io::di, io::uo) is det.
 
+:- pred error(logger::in, marker::in, string::in, io::di, io::uo) is det.
+
 :- pred info(logger::in, string::in, io::di, io::uo) is det.
+
+:- pred info(logger::in, marker::in, string::in, io::di, io::uo) is det.
 
 :- pred trace(logger::in, string::in, io::di, io::uo) is det.
 
+:- pred trace(logger::in, marker::in, string::in, io::di, io::uo) is det.
+
 :- pred warn(logger::in, string::in, io::di, io::uo) is det.
+
+:- pred warn(logger::in, marker::in, string::in, io::di, io::uo) is det.
 
 %-----------------------------------------------------------------------------%
 
 :- pred format_debug(logger::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
 
+:- pred format_debug(logger::in, marker::in, string::in, list(poly_type)::in,
+    io::di, io::uo) is det.
+
 :- pred format_error(logger::in, string::in, list(poly_type)::in,
+    io::di, io::uo) is det.
+
+:- pred format_error(logger::in, marker::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
 
 :- pred format_info(logger::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
 
+:- pred format_info(logger::in, marker::in, string::in, list(poly_type)::in,
+    io::di, io::uo) is det.
+
 :- pred format_trace(logger::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
 
+:- pred format_trace(logger::in, marker::in, string::in, list(poly_type)::in,
+    io::di, io::uo) is det.
+
 :- pred format_warn(logger::in, string::in, list(poly_type)::in,
+    io::di, io::uo) is det.
+
+:- pred format_warn(logger::in, marker::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
 
 %-----------------------------------------------------------------------------%
@@ -74,6 +103,8 @@
 %-----------------------------------------------------------------------------%
 
 :- pragma foreign_type("Java", logger, "org.slf4j.Logger").
+
+:- pragma foreign_type("Java", marker, "org.slf4j.Marker").
 
 %-----------------------------------------------------------------------------%
 
@@ -108,10 +139,24 @@
 ").
 
 :- pragma foreign_proc("Java",
+    debug(Logger::in, Marker::in, Msg::in, _IO0::di, _IO::uo),
+    [will_not_call_mercury, promise_pure, thread_safe],
+"
+    Logger.debug(Marker, Msg);
+").
+
+:- pragma foreign_proc("Java",
     error(Logger::in, Msg::in, _IO0::di, _IO::uo),
     [will_not_call_mercury, promise_pure, thread_safe],
 "
     Logger.error(Msg);
+").
+
+:- pragma foreign_proc("Java",
+    error(Logger::in, Marker::in, Msg::in, _IO0::di, _IO::uo),
+    [will_not_call_mercury, promise_pure, thread_safe],
+"
+    Logger.error(Marker, Msg);
 ").
 
 :- pragma foreign_proc("Java",
@@ -122,6 +167,13 @@
 ").
 
 :- pragma foreign_proc("Java",
+    info(Logger::in, Marker::in, Msg::in, _IO0::di, _IO::uo),
+    [will_not_call_mercury, promise_pure, thread_safe],
+"
+    Logger.info(Msg, Marker);
+").
+
+:- pragma foreign_proc("Java",
     trace(Logger::in, Msg::in, _IO0::di, _IO::uo),
     [will_not_call_mercury, promise_pure, thread_safe],
 "
@@ -129,10 +181,24 @@
 ").
 
 :- pragma foreign_proc("Java",
+    trace(Logger::in, Marker::in, Msg::in, _IO0::di, _IO::uo),
+    [will_not_call_mercury, promise_pure, thread_safe],
+"
+    Logger.trace(Marker, Msg);
+").
+
+:- pragma foreign_proc("Java",
     warn(Logger::in, Msg::in, _IO0::di, _IO::uo),
     [will_not_call_mercury, promise_pure, thread_safe],
 "
     Logger.warn(Msg);
+").
+
+:- pragma foreign_proc("Java",
+    warn(Logger::in, Marker::in, Msg::in, _IO0::di, _IO::uo),
+    [will_not_call_mercury, promise_pure, thread_safe],
+"
+    Logger.warn(Marker, Msg);
 ").
 
 %-----------------------------------------------------------------------------%
@@ -145,10 +211,26 @@ format_debug(Logger, Spec, Comps, !IO) :-
         true
     ).
 
+format_debug(Logger, Marker, Spec, Comps, !IO) :-
+    ( if is_debug_enabled(Logger, !.IO) then
+        string.format(Spec, Comps, Msg),
+        debug(Logger, Marker, Msg, !IO)
+    else
+        true
+    ).
+
 format_error(Logger, Spec, Comps, !IO) :-
     ( if is_error_enabled(Logger, !.IO) then
         string.format(Spec, Comps, Msg),
         error(Logger, Msg, !IO)
+    else
+        true
+    ).
+
+format_error(Logger, Marker, Spec, Comps, !IO) :-
+    ( if is_error_enabled(Logger, !.IO) then
+        string.format(Spec, Comps, Msg),
+        error(Logger, Marker, Msg, !IO)
     else
         true
     ).
@@ -161,6 +243,14 @@ format_info(Logger, Spec, Comps, !IO) :-
         true
     ).
 
+format_info(Logger, Marker, Spec, Comps, !IO) :-
+    ( if is_info_enabled(Logger, !.IO) then
+        string.format(Spec, Comps, Msg),
+        info(Logger, Marker, Msg, !IO)
+    else
+        true
+    ).
+
 format_trace(Logger, Spec, Comps, !IO) :-
     ( if is_trace_enabled(Logger, !.IO) then
         string.format(Spec, Comps, Msg),
@@ -169,10 +259,26 @@ format_trace(Logger, Spec, Comps, !IO) :-
         true
     ).
 
+format_trace(Logger, Marker, Spec, Comps, !IO) :-
+    ( if is_trace_enabled(Logger, !.IO) then
+        string.format(Spec, Comps, Msg),
+        slf4j.trace(Logger, Marker, Msg, !IO)
+    else
+        true
+    ).
+
 format_warn(Logger, Spec, Comps, !IO) :-
     ( if is_warn_enabled(Logger, !.IO) then
         string.format(Spec, Comps, Msg),
         warn(Logger, Msg, !IO)
+    else
+        true
+    ).
+
+format_warn(Logger, Marker, Spec, Comps, !IO) :-
+    ( if is_warn_enabled(Logger, !.IO) then
+        string.format(Spec, Comps, Msg),
+        warn(Logger, Marker, Msg, !IO)
     else
         true
     ).

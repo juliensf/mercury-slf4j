@@ -29,6 +29,8 @@
 
 :- type marker.
 
+:- pred get_marker(string::in, marker::out, io::di, io::uo) is det.
+
 %-----------------------------------------------------------------------------%
 
 :- pred debug(logger::in, string::in, io::di, io::uo) is det.
@@ -96,6 +98,14 @@
 :- pred is_warn_enabled(logger::in, io::ui) is semidet.
 
 %-----------------------------------------------------------------------------%
+
+:- pred mdc_put(string::in, string::in, io::di, io::uo) is det.
+
+:- pred mdc_remove(string::in, io::di, io::uo) is det.
+
+:- pred mdc_clear(io::di, io::uo) is det.
+
+%-----------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------%
 
 :- implementation.
@@ -127,6 +137,15 @@
     [will_not_call_mercury, promise_pure, thread_safe],
 "
     Name = org.slf4j.Logger.ROOT_LOGGER_NAME;
+").
+
+%-----------------------------------------------------------------------------%
+
+:- pragma foreign_proc("Java",
+    get_marker(Name::in, Marker::out, _IO0::di, _IO::uo),
+    [will_not_call_mercury, promise_pure, thread_safe],
+"
+    Marker = org.slf4j.MarkerFactory.getMarker(Name);
 ").
 
 %-----------------------------------------------------------------------------%
@@ -318,6 +337,29 @@ format_warn(Logger, Marker, Spec, Comps, !IO) :-
     [will_not_call_mercury, promise_pure, thread_safe],
 "
     SUCCESS_INDICATOR = Logger.isWarnEnabled();
+").
+
+%-----------------------------------------------------------------------------%
+
+:- pragma foreign_proc("Java",
+    mdc_put(Key::in, Value::in, _IO0::di, _IO::uo),
+    [will_not_call_mercury, promise_pure, thread_safe],
+"
+    org.slf4j.MDC.put(Key, Value);
+").
+
+:- pragma foreign_proc("Java",
+    mdc_remove(Key::in, _IO0::di, _IO::uo),
+    [will_not_call_mercury, promise_pure, thread_safe],
+"
+    org.slf4j.MDC.remove(Key);
+").
+
+:- pragma foreign_proc("Java",
+    mdc_clear(_IO0::di, _IO::uo),
+    [will_not_call_mercury, promise_pure, thread_safe],
+"
+    org.slf4j.MDC.clear();
 ").
 
 %-----------------------------------------------------------------------------%

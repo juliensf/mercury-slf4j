@@ -1,7 +1,7 @@
 %----------------------------------------------------------------------------%
 % vim: ft=mercury ts=4 sw=4 et
 %-----------------------------------------------------------------------------%
-% Copyright (C) 2019, Julien Fischer.
+% Copyright (C) 2019, 2022 Julien Fischer.
 % See the file COPYING for license details.
 %
 % Author: Julien Fischer <juliensf@gmail.com>
@@ -57,33 +57,43 @@
 
 :- pred format_debug(logger::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
+:- pragma format_call(pred(format_debug/5), format_string_values(2, 3)).
 
 :- pred format_debug(logger::in, marker::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
+:- pragma format_call(pred(format_debug/6), format_string_values(3, 4)).
 
 :- pred format_error(logger::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
+:- pragma format_call(pred(format_error/5), format_string_values(2, 3)).
 
 :- pred format_error(logger::in, marker::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
+:- pragma format_call(pred(format_error/6), format_string_values(3, 4)).
 
 :- pred format_info(logger::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
+:- pragma format_call(pred(format_info/5), format_string_values(2, 3)).
 
 :- pred format_info(logger::in, marker::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
+:- pragma format_call(pred(format_info/6), format_string_values(3, 4)).
 
 :- pred format_trace(logger::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
+:- pragma format_call(pred(format_trace/5), format_string_values(2, 3)).
 
 :- pred format_trace(logger::in, marker::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
+:- pragma format_call(pred(format_trace/6), format_string_values(3, 4)).
 
 :- pred format_warn(logger::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
+:- pragma format_call(pred(format_warn/5), format_string_values(2, 3)).
 
 :- pred format_warn(logger::in, marker::in, string::in, list(poly_type)::in,
     io::di, io::uo) is det.
+:- pragma format_call(pred(format_warn/6), format_string_values(3, 4)).
 
 %-----------------------------------------------------------------------------%
 

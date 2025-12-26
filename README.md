@@ -4,7 +4,8 @@
 [Simple Logging Facade for Java](https://www.slf4j.org/). It provides access
 to the SLF4J API from Mercury code. This is useful for when you have a
 Mercury component that is compiled to Java included as part of a larger
-system implemented in Java.
+system implemented in Java and the Mercury component needs to do some
+logging.
 
 ## License
 
